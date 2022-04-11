@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeLeaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurants</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+          crossorigin="anonymous">
+    <link rel = "stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body style = "background-color: bisque">
+    <div class = "container text-center">
+        <div>
+            <form>
+<!--                <p>-->
+<!--                    Are you hungry, <p th:text = "${user.fullName}"></p> ?-->
+<!--                </p>-->
+                <h2>
+
+                </h2>
+                <a class="btn btn-primary" th:href = "@{/loginUser}">
+                    Sign Out
+                </a>
+            </form>
+        </div>
+        <div>
+            <h1>List of all restaurants</h1>
+            <h1>
+
+            </h1>
+        </div>
+        <div>
+            <table class = "table table-striped table-boarded">
+                <thead class = "thead-dark">
+                    <tr>
+                        <th>Restaurant ID</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Delivery zones</th>
+                        <th>Menu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="restaurant: ${restaurants}">
+                        <td th:text = "${restaurant.restaurant_id}">Restaurant ID</td>
+                        <td th:text = "${restaurant.name}">Name</td>
+                        <td th:text = "${restaurant.location}">Location</td>
+                        <td th:text = "${restaurant.deliveryZones}">Delivery zones</td>
+                        <td><a th:href="@{'/foods/restaurant/' + ${restaurant.restaurant_id}}">Menu</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+</div>
+</body>
+</html>

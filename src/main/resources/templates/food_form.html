@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Sign Up - CodeJava</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+          crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body style = "background-color: bisque">
+<div class="container text-center">
+    <div>
+        <h1>Add new food</h1>
+    </div>
+    <form th:action="@{/food/add}"
+          method="post" style="max-width: 600px; margin: 0 auto;">
+        <div class="m-3">
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Category: </label>
+                <select name="category" id="category" th:value="${food.category}">
+                    <option value="BREAKFAST">BREAKFAST</option>
+                    <option value="LUNCH">LUNCH</option>
+                    <option value="DESSERT">DESSERT</option>
+                    <option value="BEVERAGES">BEVERAGES</option>
+                    <option value="PIZZA">PIZZA</option>
+                </select>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Description: </label>
+                <div class="col-8">
+                    <input type="text" th:value="${food.description}" name="description" class="form-control"
+                           required minlength="6" maxlength="50"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Grams: </label>
+                <div class="col-8">
+                    <input type="number" th:value="${food.grams}" name="grams" class="form-control"
+                           required/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Name: </label>
+                <div class="col-8">
+                    <input type="text" th:value="${food.name}" name="name" class="form-control"
+                           required minlength="2" maxlength="20"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Price: </label>
+                <div class="col-8">
+                    <input type="number" th:value="${food.price}" name="price" class="form-control"
+                           required/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Restaurant: </label>
+                <div class="col-8">
+                    <input type="number" th:value="${restaurant.restaurant_id}" name="restaurant_id" class="form-control"
+                           required/>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary"> Add food </button>
+            </div>
+
+        </div>
+    </form>
+</div>
+</body>
+</html>

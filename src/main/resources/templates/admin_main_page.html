@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeLeaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurants</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+          crossorigin="anonymous">
+    <link rel = "stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body style = "background-color: bisque">
+    <div class = "container text-center">
+        <div>
+            <form>
+                <p>
+                    Welcome to administration page, <p th:text = "${user.fullName}"></p>
+                </p>
+                <p>
+                    Your restaurant is: <p th:text = "${user.restaurant.name}"></p>
+                </p>
+                <p>
+                    Restaurant id: <p th:text = "${user.restaurant.restaurant_id}"></p>
+                </p>
+                <h2>
+
+                </h2>
+                <a class="btn btn-secondary" th:href = "@{/loginUser}">
+                    Sign out
+                </a>
+                <br>
+                <br>
+                <a class="btn btn-primary" th:href = "@{/foodForm}">
+                    Add food to menu
+                </a>
+            </form>
+        </div>
+        <br>
+        <br>
+
+        <div>
+            <h2>Full menu of your restaurant:</h2>
+            <table class = "table table-striped table-boarded">
+                <thead class = "thead-dark">
+                <tr>
+                    <th>Food ID</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Grams</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="food: ${user.restaurant.foods}">
+                    <td th:text = "${food.food_id}">Food ID</td>
+                    <td th:text = "${food.category}">Category</td>
+                    <td th:text = "${food.description}">Description</td>
+                    <td th:text = "${food.grams}">Grams</td>
+                    <td th:text = "${food.name}">Name</td>
+                    <td th:text = "${food.price}">price</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+</div>
+</body>
+</html>
