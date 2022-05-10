@@ -7,7 +7,6 @@ import lombok.ToString;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -34,10 +33,11 @@ public class Restaurant {
     @OneToOne(mappedBy = "restaurant")
     private User admin;
 
-    @OneToMany(mappedBy = "restaurant", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private Set<Food> foods;
 
-    public Restaurant(){}
+    public Restaurant() {
+    }
 
     public Restaurant(String name, String location, String deliveryZones, User admin) {
         this.name = name;

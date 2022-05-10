@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ro.sd.springdemo.model.enums.CategoryType;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,7 +43,8 @@ public class Food {
     @JoinTable(name = "foods_orders", joinColumns = @JoinColumn(name = "food_id"), inverseJoinColumns = @JoinColumn(name = "order_id"))
     private Set<Order> orders;
 
-    public Food(){}
+    public Food() {
+    }
 
     public Food(String name, String description, Double grams, Double price, CategoryType category, Restaurant restaurant) {
         this.name = name;

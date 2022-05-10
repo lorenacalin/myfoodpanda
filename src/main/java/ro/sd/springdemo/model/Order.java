@@ -35,7 +35,8 @@ public class Order {
     @ManyToMany(mappedBy = "orders")
     private Set<Food> foods;
 
-    public Order(){}
+    public Order() {
+    }
 
     public Order(Double totalPrice, Status status, User user) {
         this.totalPrice = totalPrice;

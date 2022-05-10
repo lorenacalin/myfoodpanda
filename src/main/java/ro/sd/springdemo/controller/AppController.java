@@ -1,24 +1,28 @@
 package ro.sd.springdemo.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ro.sd.springdemo.model.Food;
 import ro.sd.springdemo.model.Restaurant;
 import ro.sd.springdemo.model.User;
-import ro.sd.springdemo.model.enums.CategoryType;
 import ro.sd.springdemo.repository.UserRepository;
-import ro.sd.springdemo.service.UserService;
+import ro.sd.springdemo.service.EmailSenderService;
+import ro.sd.springdemo.service.PDFService;
 
-import javax.persistence.PostRemove;
 import java.util.List;
 
+/**
+ * class that creates all the APIs
+ */
 @Controller
+@Slf4j
 public class AppController {
 
     @Autowired
@@ -32,6 +36,9 @@ public class AppController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
 
     @GetMapping("")
     public String viewHomePage() {
@@ -51,6 +58,13 @@ public class AppController {
         return "login_form";
     }
 
+    /**
+     * process user registration, encode password
+     *
+     * @param user       - user which will register
+     * @param restaurant - in case the user is an administrator, this will have an associated restaurant
+     * @return html page
+     */
     @PostMapping("/process_register")
     public String processRegistration(User user, Restaurant restaurant) {
         String encodedPassword = "";
@@ -62,13 +76,29 @@ public class AppController {
         if (user.getType().equals("admin")) {
             user.setRestaurant(restaurant);
             restaurantController.saveRestaurant(restaurant);
+        } else if (user.getType().equals("client")) {
+            log.info("AppController: Sending email to registered client");
+            sendEmailTo(user);
         }
         userController.saveUser(user);
+        log.info("AppController: User registered successfully");
         return "register_success";
     }
 
+    /**
+     * process user login, decode password
+     *
+     * @param email              - user's email
+     * @param password           - user's password
+     * @param model
+     * @param redirectAttributes
+     * @return html page
+     */
     @PostMapping("/process_login")
-    public String processLogin(String email, String password, Model model, RedirectAttributes redirectAttributes) {
+    public String processLogin(String email,
+                               String password,
+                               Model model,
+                               RedirectAttributes redirectAttributes) {
         User user = userController.findByEmail(email).getBody();
         if (user != null) {
             String encodedPassword = user.getPassword();
@@ -78,6 +108,7 @@ public class AppController {
                 pass += Character.valueOf((char) ascii);
             }
             if (password.equals(pass)) {
+                log.info("AppController: User logged in successfully");
                 model.addAttribute("user", user);
                 model.addAttribute("restaurant", user.getRestaurant());
                 redirectAttributes.addFlashAttribute("user1", user);
@@ -88,7 +119,12 @@ public class AppController {
                     System.out.println(pass);
                     return "admin_main_page";
                 }
+            } else {
+                log.error("AppController: Incorrect password");
             }
+        } else {
+            log.error("AppController: User not found");
+            return "redirect:/register";
         }
         return "redirect:/loginUser";
     }
@@ -104,7 +140,10 @@ public class AppController {
     public String getFoodsByRestaurant(@PathVariable("id") Integer id, Model model) {
         List<Food> foods = foodController.getAllByRestaurantRestaurant_id(id).getBody();
         model.addAttribute("foods", foods);
-        model.addAttribute("pageTitle", "Menu for " + restaurantController.getRestaurantNameWithId(id));
+        model.addAttribute("pageTitle",
+                "Menu for " + restaurantController.getRestaurantNameWithId(id));
+        PDFService pdfService = new PDFService();
+        pdfService.export(restaurantController.getById(id));
         return "foods_by_restaurant_id";
     }
 
@@ -120,5 +159,20 @@ public class AppController {
         food.setRestaurant(restaurant);
         foodController.saveFood(food);
         return "redirect:/loginUser";
+    }
+
+    /**
+     * helper method to send email to a user
+     *
+     * @param user - receiver
+     */
+    private void sendEmailTo(User user) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("Complete registration!");
+        mailMessage.setFrom("lorenacalin5@gmail.com");
+        mailMessage.setText("Welcome! Thank you for registering at Foodpanda! " +
+                "Take a look at our restaurants' menu and enjoy your meal wherever you are!");
+        emailSenderService.sendEmail(mailMessage);
     }
 }
